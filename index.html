@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- 🍎 原生 App 橫幅 -->
+  <meta name="apple-itunes-app" content="app-id=6790087739">
+  
+  <!-- 🎨 讓 Safari 頂部狀態列自動跟隨深/淺色模式變色 -->
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#020617">
+  
+  <title>got bored? — And then, it started leaking.</title>
+  <style>
+    /* ==========================================
+       🌙 雙螢幕主題 (深/淺色) CSS 變數系統
+       ========================================== */
+    
+    :root {
+      /* ☀️ 預設：淺色模式 */
+      --bg-color: #f8fafc;
+      --text-color: #0f172a;
+      
+      --brand-grad-1: #0f172a;
+      --brand-grad-2: #64748b;
+      
+      --tagline-color: #64748b;
+      --tagline-em-color: #0f172a;
+      
+      --link-color: #64748b;
+      --link-hover-color: #0f172a;
+      --link-border: rgba(0, 0, 0, 0.05);
+      --link-bg: rgba(0, 0, 0, 0.02);
+      --link-hover-border: rgba(0, 0, 0, 0.15);
+      --link-hover-bg: rgba(0, 0, 0, 0.06);
+
+      --icon-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.15), 0 0 40px rgba(0, 0, 0, 0.03);
+      --icon-shadow-hover: 0 40px 80px -15px rgba(0, 0, 0, 0.2), 0 0 50px rgba(0, 0, 0, 0.06);
+      --icon-shadow-active: 0 10px 20px -10px rgba(0, 0, 0, 0.15);
+      
+      /* SVG 圖標內部配色 */
+      --svg-bg-stop-1: #f1f5f9;
+      --svg-bg-stop-2: #e2e8f0;
+      --svg-bg-stop-3: #cbd5e1;
+      --svg-border: #94a3b8;
+      --svg-glass: rgba(255, 255, 255, 0.8);
+      
+      /* 墨水與動態島維持黑色 (這也是淺色模式下很棒的高對比) */
+      --ink-color: #000000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* 🌑 自動偵測：深色模式 (你原本的經典配色) */
+        --bg-color: #020617;
+        --text-color: #f8fafc;
+        
+        --brand-grad-1: #ffffff;
+        --brand-grad-2: #94a3b8;
+        
+        --tagline-color: #94a3b8;
+        --tagline-em-color: #e2e8f0;
+        
+        --link-color: #64748b;
+        --link-hover-color: #f8fafc;
+        --link-border: rgba(255, 255, 255, 0.03);
+        --link-bg: rgba(255, 255, 255, 0.01);
+        --link-hover-border: rgba(255, 255, 255, 0.1);
+        --link-hover-bg: rgba(255, 255, 255, 0.05);
+
+        --icon-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 255, 255, 0.05);
+        --icon-shadow-hover: 0 40px 80px -15px rgba(0, 0, 0, 0.9), 0 0 50px rgba(255, 255, 255, 0.1);
+        --icon-shadow-active: 0 10px 20px -10px rgba(0, 0, 0, 0.9);
+        
+        --svg-bg-stop-1: #334155;
+        --svg-bg-stop-2: #1e293b;
+        --svg-bg-stop-3: #0f172a;
+        --svg-border: #475569;
+        --svg-glass: rgba(255, 255, 255, 0.2);
+        
+        --ink-color: #000000;
+      }
+    }
+
+    /* ==========================================
+       整體排版
+       ========================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      /* 套用主題變數，並加上漸變效果，讓切換主題時能柔和過渡 */
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+    }
+
+    header {
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .brand-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      text-transform: lowercase;
+      background: linear-gradient(135deg, var(--brand-grad-1) 0%, var(--brand-grad-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      transition: all 0.4s ease;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .app-link-wrapper {
+      text-decoration: none;
+      display: block;
+      outline: none;
+    }
+
+    .icon-container {
+      width: 280px;
+      height: 280px;
+      box-shadow: var(--icon-shadow);
+      border-radius: 60px;
+      overflow: hidden;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+      cursor: pointer;
+    }
+
+    .icon-container:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: var(--icon-shadow-hover);
+    }
+
+    .icon-container:active,
+    .icon-container.leaking-ink {
+      transform: scale(0.92) translateY(2px);
+      box-shadow: var(--icon-shadow-active);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tagline {
+      font-size: 16px;
+      color: var(--tagline-color);
+      text-align: center;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+      max-width: 400px;
+      transition: color 0.4s ease;
+    }
+    
+    .tagline em {
+      color: var(--tagline-em-color);
+      font-style: normal;
+      font-weight: 600;
+      transition: color 0.4s ease;
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    .privacy-link {
+      display: inline-block;
+      color: var(--link-color);
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--link-border);
+      background-color: var(--link-bg);
+      transition: all 0.3s ease;
+    }
+
+    .privacy-link:hover {
+      color: var(--link-hover-color);
+      border-color: var(--link-hover-border);
+      background-color: var(--link-hover-bg);
+    }
+
+    /* ==========================================
+       🖋️ 物理墨水動畫
+       ========================================== */
+    .drop, .stream, .ink-tension, .ink-splash, .island-base { 
+      fill: var(--ink-color); 
+    }
+    
+    .drop { animation: fall linear infinite; }
+    @keyframes fall {
+      0% { transform: translateY(0); opacity: 1; }
+      70% { opacity: 1; }
+      100% { transform: translateY(700px); opacity: 0; }
+    }
+    .d1 { animation-duration: 1.8s; animation-delay: 0.1s; }
+    .d2 { animation-duration: 1.3s; animation-delay: 0.5s; }
+    .d3 { animation-duration: 2.1s; animation-delay: 0.9s; }
+    .d4 { animation-duration: 1.6s; animation-delay: 0.3s; }
+    .d5 { animation-duration: 2.4s; animation-delay: 1.2s; }
+    .d6 { animation-duration: 1.5s; animation-delay: 0.7s; }
+    .d7 { animation-duration: 2.0s; animation-delay: 1.6s; }
+    .d8 { animation-duration: 1.7s; animation-delay: 0.4s; }
+    .d9 { animation-duration: 1.9s; animation-delay: 1.1s; }
+    
+    .stream { animation: streamFlow 2.5s ease-in-out infinite alternate; transform-origin: 512px 390px; }
+    @keyframes streamFlow { 0% { transform: scaleX(0.85) scaleY(1); } 100% { transform: scaleX(1.15) scaleY(1.15); } }
+
+    .leaking-ink .stream, .leaking-ink .drop { opacity: 0; transition: opacity 0.15s ease-out; }
+    .ink-tension { transform-origin: 512px 380px; transform: scale(0) translate3d(0, 0, 0); will-change: transform; }
+    .leaking-ink .ink-tension { animation: stretchAndSnap 0.5s ease-in forwards; }
+    @keyframes stretchAndSnap {
+      0%   { transform: scale(0) translate3d(0, 0, 0); opacity: 1; }
+      60%  { transform: scale(3.5) translate3d(0, 50px, 0) scaleX(0.7); opacity: 1; }
+      80%  { transform: scale(1) translate3d(0, 90px, 0) scaleX(0.2); opacity: 0; }
+      100% { transform: scale(0) translate3d(0, 110px, 0); opacity: 0; }
+    }
+    .ink-splash { transform-origin: 512px 430px; transform: scale(0) translate3d(0, 0, 0); will-change: transform; transition: transform 0.6s cubic-bezier(0.5, 0, 0.1, 1); }
+    .leaking-ink .ink-splash { transform: scale(40) translate3d(0, 0, 0); transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 class="brand-title">got bored?</h1>
+  </header>
+
+  <main>
+    <a href="https://apps.apple.com/tw/app/got-bored/id6790087739?l=en-GB" id="appLink" class="app-link-wrapper">
+      <div class="icon-container" id="iconContainer">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="100%" height="100%">
+          <defs>
+            <radialGradient id="bgGrad" cx="50%" cy="40%" r="60%">
+              <!-- SVG 漸層現在也改為讀取 CSS 變數 -->
+              <stop offset="0%" style="stop-color: var(--svg-bg-stop-1); transition: stop-color 0.4s;" />
+              <stop offset="60%" style="stop-color: var(--svg-bg-stop-2); transition: stop-color 0.4s;" />
+              <stop offset="100%" style="stop-color: var(--svg-bg-stop-3); transition: stop-color 0.4s;" />
+            </radialGradient>
+            
+            <filter id="goo">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 25 -10" result="goo" />
+              <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+            </filter>
+          </defs>
+
+          <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+          
+          <!-- 圖標的邊框也支援雙色主題 -->
+          <rect x="40" y="40" width="944" height="944" rx="180" fill="none" style="stroke: var(--svg-border); transition: stroke 0.4s;" stroke-width="6" opacity="0.3"/>
+
+          <g filter="url(#goo)">
+            <rect class="island-base" x="330" y="326" width="364" height="110" rx="55" />
+            <path class="stream" d="M 460 380 C 460 550, 564 550, 564 380 Z" />
+            <circle cx="512" cy="380" r="35" class="drop d1"/>
+            <circle cx="475" cy="380" r="28" class="drop d2"/>
+            <circle cx="535" cy="380" r="30" class="drop d3"/>
+            <circle cx="495" cy="380" r="22" class="drop d4"/>
+            <circle cx="525" cy="380" r="38" class="drop d5"/>
+            <circle cx="460" cy="380" r="20" class="drop d6"/>
+            <circle cx="555" cy="380" r="24" class="drop d7"/>
+            <circle cx="485" cy="380" r="18" class="drop d8"/>
+            <circle cx="545" cy="380" r="26" class="drop d9"/>
+
+            <circle class="ink-tension" cx="512" cy="380" r="30" />
+          </g>
+          <circle class="ink-splash" cx="512" cy="430" r="20" />
+          
+          <!-- 玻璃反光也是自動跟隨主題 -->
+          <path d="M 640 342 Q 685 342 700 370" fill="none" style="stroke: var(--svg-glass); transition: stroke 0.4s;" stroke-width="8" stroke-linecap="round" />
+        </svg>
+      </div>
+    </a>
+    <p class="tagline">And then, the dynamic island <em>started leaking</em>.</p>
+  </main>
+
+  <footer>
+    <a class="privacy-link" href="privacy.html">Privacy Policy 隱私權政策</a>
+  </footer>
+
+  <script>
+    const appLink = document.getElementById('appLink');
+    const iconContainer = document.getElementById('iconContainer');
+
+    appLink.addEventListener('click', function(e) {
+      e.preventDefault(); 
+      
+      iconContainer.classList.add('leaking-ink');
+
+      setTimeout(() => {
+        window.location.href = appLink.href;
+        
+        setTimeout(() => {
+          iconContainer.classList.remove('leaking-ink');
+        }, 800); 
+        
+      }, 850);
+    });
+  </script>
+
+</body>
+</html>
